@@ -82,6 +82,26 @@ class _MyHomePageState extends State<MyHomePage> {
           TextButton(
             onPressed: () => {print("ボタンがおされたよ")},
             child: Text("更新"),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Icon(
+                Icons.favorite,
+                color: Colors.pink,
+                size: 24.0,
+              ),
+              Icon(
+                Icons.audiotrack,
+                color: Colors.green,
+                size: 30.0,
+              ),
+              Icon(
+                Icons.beach_access,
+                color: Colors.blue,
+                size: 36.0,
+              ),
+            ],
           )
         ])
         // body: Center(
