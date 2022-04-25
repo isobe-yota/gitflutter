@@ -1,3 +1,5 @@
+//import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -50,15 +52,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  String _type = "偶数";
+  //String _type = "偶数";
   void _incrementCounter() {
     setState(() {
       _counter++;
-      if (_counter % 2 == 0) {
-        _type = "偶数";
-      } else {
-        _type = "奇数";
-      }
+      // if (_counter % 2 == 0) {
+      //   _type = "偶数";
+      // } else {
+      //   _type = "奇数";
+      // }
     });
   }
 
@@ -69,15 +71,26 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: IconButton(
-            icon: Icon(Icons.open_in_browser),
-            onPressed: () async {
-              String url = Uri.encodeFull("https://www.google.co.jp");
-              if (await canLaunch(url)) {
-                await launch(url);
-              }
-            }),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              key: Key('counter'),
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ],
+        ),
       ),
+      floatingActionButton: FloatingActionButton(
+        key: Key('increment'),
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
