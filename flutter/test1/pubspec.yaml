@@ -29,6 +29,8 @@ environment:
 dependencies:
   url_launcher: ^6.0.3        # バージョンは適宜最新化する
   shared_preferences: ^2.0.5  # バージョンは適宜最新化する
+  flutter_datetime_picker: ^1.4.0
+  font_awesome_flutter: "^8.8.1"
   flutter:
     sdk: flutter
 
