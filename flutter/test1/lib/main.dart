@@ -30,7 +30,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   var intStream = StreamController<int>();
-  var stringStream = StreamController<String>();
+  var stringStream = StreamController<String>.broadcast();
   var generator = new Generator();
   var coodinator = new Coordinator();
   var consumer = new Consumer();
@@ -78,6 +78,16 @@ class _MyHomePageState extends State<MyHomePage> {
               key: Key('counter'),
               style: Theme.of(context).textTheme.headline4,
             ),
+            StreamBuilder<String>(
+              stream: stringStream.stream,
+              initialData: "",
+              builder: (context, snapshot) {
+                return Text(
+                  'RANDOM : ${snapshot.data}',
+                  style: Theme.of(context).textTheme.headline4,
+                );
+              },
+            )
           ],
         ),
       ),
