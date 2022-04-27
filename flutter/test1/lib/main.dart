@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:test1/dummy.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,51 +19,57 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, this.title}) : super(key: key);
-  final String? title;
+  MyHomePage({Key? key, required this.title}) : super(key: key);
+  final String title;
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  void _incrementCounter() {
-    setState(() {
-      print("call setState");
-      _counter++;
-    });
-    nextpage();
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addObserver(this);
   }
 
-  // ダミーで画面遷移を行う
-  void nextpage() async {
-    {
-      // ダミー画面へ遷移
-      await Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) {
-        return DummyPage();
-      }));
+  @override
+  void dispose() {
+    print("dispose");
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("stete = $state");
+    switch (state) {
+      case AppLifecycleState.inactive:
+        print('非アクティブになったときの処理');
+        break;
+      case AppLifecycleState.paused:
+        print('停止されたときの処理');
+        break;
+      case AppLifecycleState.resumed:
+        print('再開されたときの処理');
+        break;
+      case AppLifecycleState.detached:
+        print('破棄されたときの処理');
+        break;
     }
   }
 
-  @override
-  void initState() {
-    print("call initState");
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    print("call didChangeDependencies");
-    super.didChangeDependencies();
+  int _counter = 0;
+  _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    print("call build");
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title!),
+        title: Text(widget.title),
       ),
       body: Center(
         child: Column(
@@ -74,36 +80,16 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              key: Key('counter'),
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        key: Key('increment'),
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
-  }
-
-  @override
-  void didUpdateWidget(oldWidget) {
-    print("call didUpdateWidget");
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void deactivate() {
-    print("call deactivate");
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    print("call dispose");
-    super.dispose();
   }
 }
