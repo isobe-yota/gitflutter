@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:test1/async.dart';
+import 'package:test1/dummy.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,13 +29,38 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   void _incrementCounter() {
     setState(() {
+      print("call setState");
       _counter++;
     });
-    Async().asynctest4(); // 2-4も同様にここで呼び出す
+    nextpage();
+  }
+
+  // ダミーで画面遷移を行う
+  void nextpage() async {
+    {
+      // ダミー画面へ遷移
+      await Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) {
+        return DummyPage();
+      }));
+    }
+  }
+
+  @override
+  void initState() {
+    print("call initState");
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    print("call didChangeDependencies");
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    print("call build");
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title!),
@@ -60,7 +85,25 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
-      ),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  @override
+  void didUpdateWidget(oldWidget) {
+    print("call didUpdateWidget");
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void deactivate() {
+    print("call deactivate");
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    print("call dispose");
+    super.dispose();
   }
 }
