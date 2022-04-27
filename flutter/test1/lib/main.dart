@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:test1/async.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,40 +25,13 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-  late AnimationController _animationControler;
-  late Animation _animation;
-
-  _play() async {
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+  void _incrementCounter() {
     setState(() {
-      _animationControler.forward();
+      _counter++;
     });
-  }
-
-  _stop() async {
-    setState(() {
-      _animationControler.stop();
-    });
-  }
-
-  _reverse() async {
-    setState(() {
-      _animationControler.reverse();
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _animationControler =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
-    _animation = _animationControler.drive(Tween(begin: 0.0, end: 2.0 * pi));
-  }
-
-  @override
-  void dispose() {
-    _animationControler.dispose();
-    super.dispose();
+    Async().asynctest1(); // 2-4も同様にここで呼び出す
   }
 
   @override
@@ -69,22 +41,26 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         title: Text(widget.title!),
       ),
       body: Center(
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, _) {
-            return Transform.rotate(
-                angle: _animation.value, child: Icon(Icons.cached, size: 100));
-          },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              key: Key('counter'),
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ],
         ),
       ),
-      floatingActionButton:
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        FloatingActionButton(
-            onPressed: _play, child: Icon(Icons.arrow_forward)),
-        FloatingActionButton(onPressed: _stop, child: Icon(Icons.pause)),
-        FloatingActionButton(
-            onPressed: _reverse, child: Icon(Icons.arrow_back)),
-      ]),
+      floatingActionButton: FloatingActionButton(
+        key: Key('increment'),
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
