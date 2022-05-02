@@ -30,10 +30,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    //2つのStatefulWidgetが準備
     tiles = [
-      StatefulTile(),
-      StatefulTile(),
+      StatefulTile(key: UniqueKey()),
+      StatefulTile(key: UniqueKey()),
     ];
   }
 
