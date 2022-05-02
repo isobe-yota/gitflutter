@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:video_player/video_player.dart';
+import 'package:geolocator/geolocator.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,49 +26,48 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  VideoPlayerController? _controller;
-  final imagePicker = ImagePicker();
-  Future getVideoFromCamera() async {
-    final pickedFile = await imagePicker.getVideo(source: ImageSource.camera);
-    _controller = VideoPlayerController.file(File(pickedFile!.path));
-    _controller!.initialize().then((_) {
-      setState(() {
-        _controller!.play();
-      });
-    });
-  }
-
-  Future getVideoFromGarally() async {
-    PickedFile pickedFile =
-        (await imagePicker.getVideo(source: ImageSource.gallery))!;
-    _controller = VideoPlayerController.file(File(pickedFile.path));
-    _controller!.initialize().then((_) {
-      setState(() {
-        _controller!.play();
-      });
+  String _location = "no data";
+  Future<void> getLocation() async {
+    // 現在の位置を返す
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    // 北緯がプラス。南緯がマイナス
+    print("緯度: " + position.latitude.toString());
+    // 東経がプラス、西経がマイナス
+    print("経度: " + position.longitude.toString());
+    // 高度
+    print("高度: " + position.altitude.toString());
+    // 距離をメートルで返す
+    double distanceInMeters =
+        Geolocator.distanceBetween(35.68, 139.76, -23.61, -46.40);
+    print(distanceInMeters);
+    // 方位を返す
+    double bearing = Geolocator.bearingBetween(35.68, 139.76, -23.61, -46.40);
+    print(bearing);
+    setState(() {
+      _location = position.toString();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title!),
+      appBar: AppBar(
+        title: Text(widget.title!),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              '$_location',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ],
         ),
-        body: Center(
-            // ignore: unnecessary_null_comparison
-            child: _controller == null
-                ? Text(
-                    '動画を選択してください',
-                    style: Theme.of(context).textTheme.headline4,
-                  )
-                : VideoPlayer(_controller!)),
-        floatingActionButton:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          FloatingActionButton(
-              onPressed: getVideoFromCamera, child: Icon(Icons.video_call)),
-          FloatingActionButton(
-              onPressed: getVideoFromGarally, child: Icon(Icons.movie_creation))
-        ]));
+      ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: getLocation, child: Icon(Icons.location_on)),
+    );
   }
 }
