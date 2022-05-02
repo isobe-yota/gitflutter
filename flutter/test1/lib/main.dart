@@ -10,6 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      // Theme.ofで参照したいThemeData
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -28,6 +29,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   void _incrementCounter() {
+    print(Theme.of(context));
+    print(Theme.of(context).primaryColor);
+    print(Theme.of(context).brightness);
     setState(() {
       _counter++; // ここにブレイクポイントをはる
     });
