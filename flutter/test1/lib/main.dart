@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,23 +28,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  File? _image;
+  VideoPlayerController? _controller;
   final imagePicker = ImagePicker();
-  Future getImageFromCamera() async {
-    final pickedFile = await imagePicker.getImage(source: ImageSource.camera);
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      }
+  Future getVideoFromCamera() async {
+    final pickedFile = await imagePicker.getVideo(source: ImageSource.camera);
+    _controller = VideoPlayerController.file(File(pickedFile!.path));
+    _controller!.initialize().then((_) {
+      setState(() {
+        _controller!.play();
+      });
     });
   }
 
-  Future getImageFromGarally() async {
-    final pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      }
+  Future getVideoFromGarally() async {
+    PickedFile pickedFile =
+        (await imagePicker.getVideo(source: ImageSource.gallery))!;
+    _controller = VideoPlayerController.file(File(pickedFile.path));
+    _controller!.initialize().then((_) {
+      setState(() {
+        _controller!.play();
+      });
     });
   }
 
@@ -54,18 +58,19 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(widget.title!),
         ),
         body: Center(
-            child: _image == null
+            // ignore: unnecessary_null_comparison
+            child: _controller == null
                 ? Text(
-                    '写真を選択してください',
+                    '動画を選択してください',
                     style: Theme.of(context).textTheme.headline4,
                   )
-                : Image.file(_image!)),
+                : VideoPlayer(_controller!)),
         floatingActionButton:
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           FloatingActionButton(
-              onPressed: getImageFromCamera, child: Icon(Icons.photo_camera)),
+              onPressed: getVideoFromCamera, child: Icon(Icons.video_call)),
           FloatingActionButton(
-              onPressed: getImageFromGarally, child: Icon(Icons.photo_album))
+              onPressed: getVideoFromGarally, child: Icon(Icons.movie_creation))
         ]));
   }
 }
