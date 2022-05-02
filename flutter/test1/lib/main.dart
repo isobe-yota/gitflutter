@@ -1,5 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:test1/BusinessLogic.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,7 +11,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      // Theme.ofで参照したいThemeData
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -27,41 +27,45 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  void _incrementCounter() {
-    print(Theme.of(context));
-    print(Theme.of(context).primaryColor);
-    print(Theme.of(context).brightness);
+  File? _image;
+  final imagePicker = ImagePicker();
+  Future getImageFromCamera() async {
+    final pickedFile = await imagePicker.getImage(source: ImageSource.camera);
     setState(() {
-      _counter++; // ここにブレイクポイントをはる
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
+
+  Future getImageFromGarally() async {
+    final pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title!),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+        appBar: AppBar(
+          title: Text(widget.title!),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        body: Center(
+            child: _image == null
+                ? Text(
+                    '写真を選択してください',
+                    style: Theme.of(context).textTheme.headline4,
+                  )
+                : Image.file(_image!)),
+        floatingActionButton:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          FloatingActionButton(
+              onPressed: getImageFromCamera, child: Icon(Icons.photo_camera)),
+          FloatingActionButton(
+              onPressed: getImageFromGarally, child: Icon(Icons.photo_album))
+        ]));
   }
 }
