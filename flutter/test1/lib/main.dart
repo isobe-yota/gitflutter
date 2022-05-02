@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:test1/BussinessLogic.dart';
-import "dart:async";
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:test1/statefulTile.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,16 +9,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      localizationsDelegates: [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: [
-        const Locale('ja', ''), //日本語
-        const Locale('en', ''), //英語
-      ],
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -32,34 +19,42 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
+  MyHomePage({Key? key, this.title}) : super(key: key);
+  final String? title;
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late List<Widget> tiles;
+  @override
+  void initState() {
+    super.initState();
+    //2つのStatefulWidgetが準備
+    tiles = [
+      StatefulTile(),
+      StatefulTile(),
+    ];
+  }
+
+  // 入れ替え処理
+  void changeTiles() {
+    setState(() {
+      tiles.insert(1, tiles.removeAt(0));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title!),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              AppLocalizations.of(context)!.hello("kazutxt"),
-            ),
-            Text(
-              AppLocalizations.of(context)!.allow,
-            ),
-            Text(
-              AppLocalizations.of(context)!.deny,
-            ),
-          ],
-        ),
+      body: Row(children: tiles),
+      floatingActionButton: FloatingActionButton(
+        onPressed: changeTiles,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
       ),
     );
   }
