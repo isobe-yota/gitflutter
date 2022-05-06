@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,27 +26,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String _location = "no data";
-  Future<void> getLocation() async {
-    // 現在の位置を返す
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    // 北緯がプラス。南緯がマイナス
-    print("緯度: " + position.latitude.toString());
-    // 東経がプラス、西経がマイナス
-    print("経度: " + position.longitude.toString());
-    // 高度
-    print("高度: " + position.altitude.toString());
-    // 距離をメートルで返す
-    double distanceInMeters =
-        Geolocator.distanceBetween(35.68, 139.76, -23.61, -46.40);
-    print(distanceInMeters);
-    // 方位を返す
-    double bearing = Geolocator.bearingBetween(35.68, 139.76, -23.61, -46.40);
-    print(bearing);
-    setState(() {
-      _location = position.toString();
-    });
+  FlutterTts flutterTts = FlutterTts();
+  String _speakText =
+      "寿限無 寿限無 五劫の擦り切れ 海砂利水魚の 水行末 雲来末 風来末 食う寝る処に住む処 藪ら柑子の藪柑子 パイポパイポ パイポのシューリンガン シューリンガンのグーリンダイ グーリンダイのポンポコピーのポンポコナーの 長久命の長助";
+  Future<void> _speak() async {
+    await flutterTts.setLanguage("ja-JP");
+    await flutterTts.setSpeechRate(1.0);
+    await flutterTts.setVolume(1.0);
+    await flutterTts.setPitch(1.0);
+    await flutterTts.speak(_speakText);
+  }
+
+  Future<void> _stop() async {
+    await flutterTts.stop();
   }
 
   @override
@@ -60,14 +52,17 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '$_location',
+              '$_speakText',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: getLocation, child: Icon(Icons.location_on)),
+      floatingActionButton:
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        FloatingActionButton(onPressed: _speak, child: Icon(Icons.play_arrow)),
+        FloatingActionButton(onPressed: _stop, child: Icon(Icons.stop))
+      ]),
     );
   }
 }
