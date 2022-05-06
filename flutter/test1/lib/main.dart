@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
+import 'package:speech_to_text/speech_recognition_error.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 void main() {
   runApp(MyApp());
@@ -26,19 +28,41 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  FlutterTts flutterTts = FlutterTts();
-  String _speakText =
-      "寿限無 寿限無 五劫の擦り切れ 海砂利水魚の 水行末 雲来末 風来末 食う寝る処に住む処 藪ら柑子の藪柑子 パイポパイポ パイポのシューリンガン シューリンガンのグーリンダイ グーリンダイのポンポコピーのポンポコナーの 長久命の長助";
+  String lastWords = "";
+  String lastError = '';
+  String lastStatus = '';
+  stt.SpeechToText speech = stt.SpeechToText();
+
   Future<void> _speak() async {
-    await flutterTts.setLanguage("ja-JP");
-    await flutterTts.setSpeechRate(1.0);
-    await flutterTts.setVolume(1.0);
-    await flutterTts.setPitch(1.0);
-    await flutterTts.speak(_speakText);
+    bool available = await speech.initialize(
+        onError: errorListener, onStatus: statusListener);
+    if (available) {
+      speech.listen(onResult: resultListener);
+    } else {
+      print("The user has denied the use of speech recognition.");
+    }
   }
 
   Future<void> _stop() async {
-    await flutterTts.stop();
+    speech.stop();
+  }
+
+  void resultListener(SpeechRecognitionResult result) {
+    setState(() {
+      lastWords = '${result.recognizedWords}';
+    });
+  }
+
+  void errorListener(SpeechRecognitionError error) {
+    setState(() {
+      lastError = '${error.errorMsg} - ${error.permanent}';
+    });
+  }
+
+  void statusListener(String status) {
+    setState(() {
+      lastStatus = '$status';
+    });
   }
 
   @override
@@ -52,7 +76,11 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '$_speakText',
+              '変換文字:$lastWords',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            Text(
+              'ステータス : $lastStatus',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
