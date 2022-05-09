@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
@@ -28,7 +30,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
-  List<double> accelerometerValues = <double>[];
+  List<double> anglemeterValues = <double>[];
   List<StreamSubscription<dynamic>> _streamSubscriptions =
       <StreamSubscription<dynamic>>[];
 
@@ -36,10 +38,9 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
-    _streamSubscriptions
-        .add(accelerometerEvents.listen((AccelerometerEvent event) {
+    _streamSubscriptions.add(gyroscopeEvents.listen((GyroscopeEvent event) {
       setState(() {
-        accelerometerValues = <double>[event.x, event.y, event.z];
+        anglemeterValues = <double>[event.x, event.y, event.z];
       });
     }));
   }
@@ -82,11 +83,11 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> accelerometer = accelerometerValues
+    final List<String> anglemeter = anglemeterValues
         .map((double v) => v.toStringAsFixed(1))
         .toList() as List<String>;
-    final double accel_x = accelerometerValues[0];
-    final String accel_y = accelerometerValues[1].toStringAsFixed(2);
+    final double angle_x = anglemeterValues[0];
+    final String angle_y = anglemeterValues[1].toStringAsFixed(2);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -96,10 +97,10 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Accelerometer: $accelerometer',
+              'Anglemeter: $anglemeter',
             ),
-            Text('ACCEL_X: $accel_x'),
-            Text("ACCEL_Y: $accel_y"),
+            Text('ANGLE_X: $angle_x'),
+            Text("ANGLE_Y: $angle_y"),
             Text(
               'You have pushed the button this many times:',
             ),
