@@ -74,19 +74,31 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   }
 
   int _counter = 0;
-  _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  int _roopcount = 0;
+
+  _incrementCounter(bool flag) {
+    if (flag) {
+      _roopcount = 1;
+    } else {
+      if (_roopcount == 1) {
+        setState(() {
+          _counter++;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<String> accelerometer = accelerometerValues
-        .map((double v) => v.toStringAsFixed(1))
-        .toList() as List<String>;
-    final double accel_x = accelerometerValues[0];
-    final String accel_y = accelerometerValues[1].toStringAsFixed(2);
+    final double accel = accelerometerValues[0] +
+        accelerometerValues[1] +
+        accelerometerValues[2];
+
+    if (accel > 20.0) {
+      _incrementCounter(true);
+    } else if (accel < 5.0) {
+      _incrementCounter(false);
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -95,13 +107,9 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text("ACCEL: $accel"),
             Text(
-              'Accelerometer: $accelerometer',
-            ),
-            Text('ACCEL_X: $accel_x'),
-            Text("ACCEL_Y: $accel_y"),
-            Text(
-              'You have pushed the button this many times:',
+              '歩いた歩数',
             ),
             Text(
               '$_counter',
@@ -109,11 +117,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
       ),
     );
   }
