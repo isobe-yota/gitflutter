@@ -30,7 +30,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
-  List<double> anglemeterValues = <double>[];
+  List<double> accelerometerValues = <double>[];
   List<StreamSubscription<dynamic>> _streamSubscriptions =
       <StreamSubscription<dynamic>>[];
 
@@ -38,9 +38,10 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
-    _streamSubscriptions.add(gyroscopeEvents.listen((GyroscopeEvent event) {
+    _streamSubscriptions
+        .add(accelerometerEvents.listen((AccelerometerEvent event) {
       setState(() {
-        anglemeterValues = <double>[event.x, event.y, event.z];
+        accelerometerValues = <double>[event.x, event.y, event.z];
       });
     }));
   }
@@ -91,7 +92,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-
     final double accel = accelerometerValues[0] +
         accelerometerValues[1] +
         accelerometerValues[2];
@@ -101,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     } else if (accel < 5.0) {
       _incrementCounter(false);
     }
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -112,9 +112,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           children: <Widget>[
             Text("ACCEL: $accel"),
             Text(
-
               '歩いた歩数',
-
             ),
             Text(
               '$_counter',
