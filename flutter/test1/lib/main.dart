@@ -1,11 +1,10 @@
-import 'dart:html';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sensors/sensors.dart';
-import 'dart:async';
+import 'package:firebase_core/firebase_core.dart';
+import 'login.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -13,114 +12,106 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Firebase Auth',
+      home: Login(),
+      routes: <String, WidgetBuilder>{
+        '/login': (_) => new Login(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
+// class Register extends StatefulWidget {
+//   const Register({Key? key}) : super(key: key);
 
-class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
-  List<double> accelerometerValues = <double>[];
-  List<StreamSubscription<dynamic>> _streamSubscriptions =
-      <StreamSubscription<dynamic>>[];
+//   @override
+//   _RegisterState createState() => _RegisterState();
+// }
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance!.addObserver(this);
-    _streamSubscriptions
-        .add(accelerometerEvents.listen((AccelerometerEvent event) {
-      setState(() {
-        accelerometerValues = <double>[event.x, event.y, event.z];
-      });
-    }));
-  }
+// class _RegisterState extends State<Register> {
+//   //ステップ１
+//   final _auth = FirebaseAuth.instance;
 
-  @override
-  void dispose() {
-    print("dispose");
-    WidgetsBinding.instance!.removeObserver(this);
-    super.dispose();
-    for (StreamSubscription<dynamic> subscription in _streamSubscriptions) {
-      subscription.cancel();
-    }
-  }
+//   String email = '';
+//   String password = '';
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    print("stete = $state");
-    switch (state) {
-      case AppLifecycleState.inactive:
-        print('非アクティブになったときの処理');
-        break;
-      case AppLifecycleState.paused:
-        print('停止されたときの処理');
-        break;
-      case AppLifecycleState.resumed:
-        print('再開されたときの処理');
-        break;
-      case AppLifecycleState.detached:
-        print('破棄されたときの処理');
-        break;
-    }
-  }
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('新規登録'),
+//       ),
+//       body: Column(
+//         children: [
+//           Padding(
+//             padding: const EdgeInsets.all(10.0),
+//             child: TextField(
+//               onChanged: (value) {
+//                 email = value;
+//               },
+//               decoration: const InputDecoration(
+//                 hintText: 'メールアドレスを入力',
+//               ),
+//             ),
+//           ),
+//           Padding(
+//             padding: const EdgeInsets.all(10.0),
+//             child: TextField(
+//               onChanged: (value) {
+//                 password = value;
+//               },
+//               obscureText: true,
+//               decoration: const InputDecoration(
+//                 hintText: 'パスワードを入力',
+//               ),
+//             ),
+//           ),
+//           ElevatedButton(
+//             child: const Text('新規登録'),
+//             //ステップ２
+//             onPressed: () async {
+//               try {
+//                 final newUser = await _auth.createUserWithEmailAndPassword(
+//                     email: email, password: password);
+//                 if (newUser != null) {
+//                   Navigator.pushNamed(context, '/content');
+//                 }
+//               } on FirebaseAuthException catch (e) {
+//                 if (e.code == 'email-already-in-use') {
+//                   print('指定したメールアドレスは登録済みです');
+//                 } else if (e.code == 'invalid-email') {
+//                   print('メールアドレスのフォーマットが正しくありません');
+//                 } else if (e.code == 'operation-not-allowed') {
+//                   print('指定したメールアドレス・パスワードは現在使用できません');
+//                 } else if (e.code == 'weak-password') {
+//                   print('パスワードは６文字以上にしてください');
+//                 }
+//               }
+//             },
+//           )
+//         ],
+//       ),
+//     );
+//   }
+// }
 
-  int _counter = 0;
-  int _roopcount = 0;
+// class MainContent extends StatefulWidget {
+//   const MainContent({Key? key}) : super(key: key);
 
-  _incrementCounter(bool flag) {
-    if (flag) {
-      _roopcount = 1;
-    } else {
-      if (_roopcount == 1) {
-        setState(() {
-          _counter++;
-        });
-      }
-    }
-  }
+//   @override
+//   _MainContentState createState() => _MainContentState();
+// }
 
-  @override
-  Widget build(BuildContext context) {
-    final double accel = accelerometerValues[0] +
-        accelerometerValues[1] +
-        accelerometerValues[2];
-
-    if (accel > 20.0) {
-      _incrementCounter(true);
-    } else if (accel < 5.0) {
-      _incrementCounter(false);
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text("ACCEL: $accel"),
-            Text(
-              '歩いた歩数',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+// class _MainContentState extends State<MainContent> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('成功'),
+//       ),
+//       body: Center(
+//         child: Text('新規登録成功！'),
+//       ),
+//     );
+//   }
+// }

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "340666475977",
+    "project_id": "healthy-life-app-ad7cd",
+    "storage_bucket": "healthy-life-app-ad7cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:340666475977:android:0c47e141ecc56a2bfcb418",
+        "android_client_info": {
+          "package_name": "com.Health"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "340666475977-fcd8s1v2f76uda2dg243m5jpv8r69qkj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Health",
+            "certificate_hash": "0c909785c87d743ac67114e29873e37b003b27f6"
+          }
+        },
+        {
+          "client_id": "340666475977-ss2lpk4t04d7t0adkf4dgkktap9j78hd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKXBr2eYNOGbaLKhPa-mIu-bMrZ3rvzkE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "340666475977-ss2lpk4t04d7t0adkf4dgkktap9j78hd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
